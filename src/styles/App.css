@@ -43,3 +43,14 @@
 .main-content{
   margin: 0% 15%;
 }
+.avatar{
+  /* src image (replaced original since it's not available anymore) */
+  background-image: url("/src/assets/img/monke.jpg");
+  
+  background-size:cover;
+  background-position: center;
+  
+  /* desired height */
+  height: 2.5rem;
+  width: 2.5rem;
+}
