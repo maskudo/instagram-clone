@@ -5,7 +5,7 @@ function Home() {
   return (
     <>
       <Header />
-      <div className="d-flex">
+      <div className="d-flex row main-content">
         <Timeline />
         <Sidebar />
       </div>
