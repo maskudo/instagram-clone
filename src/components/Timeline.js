@@ -1,30 +1,52 @@
 import Photo from "../assets/img/monke.jpg";
+
+let bgStylingObject = {
+  backgroundImage: `url(${Photo})`,
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+  height: "2.5rem",
+  width: "2.5rem",
+};
 function Timeline() {
   return (
     <div className="col-8">
       <div class="card my-4">
         <div className="card-header d-flex align-items-center">
-          <div className="avatar rounded-circle"></div>
+          <div style={bgStylingObject} className=" rounded-circle"></div>
           <div className="mx-4">
             <a href="/" className="nav-link">
               user.handle
             </a>
           </div>
         </div>
-        <div class="card-body">
+        <div class="card-body p-0">
           <img src={Photo} alt="monke lol" className="img-fluid p-0" />
         </div>
         <div className="card-footer">
-          <h2>Lol</h2>
-        </div>
-      </div>
-      <div class="card my-4">
-        <h5 class="card-header">Featured</h5>
-        <div class="card-body">
-          <img src={Photo} alt="monke lol" className="img-fluid p-0" />
-        </div>
-        <div className="card-footer">
-          <h2>Lol</h2>
+          <div className="top-items row">
+            <ul className="navbar-nav col-9 d-flex flex-row">
+              <li>
+                <a href="/" className="nav-link p-2">
+                  Like
+                </a>
+              </li>
+              <li>
+                <a href="/" className="nav-link p-2">
+                  Comment
+                </a>
+              </li>
+              <li>
+                <a href="/" className="nav-link p-2">
+                  Share
+                </a>
+              </li>
+            </ul>
+            <div className="col-3">
+              <a href="/" className="nav-link">
+                Copy Link
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
