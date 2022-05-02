@@ -20,7 +20,7 @@ function Header() {
             </form>
             <ul className="navbar-nav me-auto mb-2 mb-lg-0 d-flex justify-content-evenly col-6">
               <li className="nav-item">
-                <a className="nav-link" href="home">
+                <a className="nav-link" href="/">
                   Home
                 </a>
               </li>
