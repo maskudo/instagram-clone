@@ -1,18 +1,12 @@
 import Photo from "../assets/img/monke.jpg";
+import Avatar from "./common/Avatar";
 
-let bgStylingObject = {
-  backgroundImage: `url(${Photo})`,
-  backgroundSize: "cover",
-  backgroundPosition: "center",
-  height: "2.5rem",
-  width: "2.5rem",
-};
 function Timeline() {
   return (
     <div className="col-8">
       <div className="card my-4">
         <div className="card-header d-flex align-items-center">
-          <div style={bgStylingObject} className=" rounded-circle"></div>
+          <Avatar photo={Photo} size={2.5} />
           <div className="mx-4">
             <a href="/" className="nav-link">
               user.handle
