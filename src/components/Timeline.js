@@ -10,7 +10,7 @@ let bgStylingObject = {
 function Timeline() {
   return (
     <div className="col-8">
-      <div class="card my-4">
+      <div className="card my-4">
         <div className="card-header d-flex align-items-center">
           <div style={bgStylingObject} className=" rounded-circle"></div>
           <div className="mx-4">
@@ -22,21 +22,21 @@ function Timeline() {
         <div class="card-body p-0">
           <img src={Photo} alt="monke lol" className="img-fluid p-0" />
         </div>
-        <div className="card-footer text-start">
+        <div className="text-start p-4">
           <div className="top-items row">
-            <ul className="navbar-nav col-9 d-flex flex-row">
+            <ul className="navbar-nav col-9 d-flex flex-row p-2">
               <li>
-                <a href="/" className="nav-link p-2">
+                <a href="/" className="nav-link pe-2">
                   Like
                 </a>
               </li>
               <li>
-                <a href="/" className="nav-link p-2">
+                <a href="/" className="nav-link pe-2">
                   Comment
                 </a>
               </li>
               <li>
-                <a href="/" className="nav-link p-2">
+                <a href="/" className="nav-link pe-2">
                   Share
                 </a>
               </li>
@@ -62,6 +62,22 @@ function Timeline() {
               <div className="comment">user.handle Cool pic sis</div>
             </div>
           </div>
+        </div>
+        <div className="add-comment card-footer">
+          <form className="row">
+            <div className="col-9 m-2">
+              <input
+                type="text"
+                className="form-control border-0"
+                placeholder="Add a comment..."
+              />
+            </div>
+            <div className="col-2 d-flex align-items-center justify-content-end">
+              <button className="btn btn-outline-secondary " type="submit">
+                Post
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
