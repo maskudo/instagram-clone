@@ -22,7 +22,7 @@ function Timeline() {
         <div class="card-body p-0">
           <img src={Photo} alt="monke lol" className="img-fluid p-0" />
         </div>
-        <div className="card-footer">
+        <div className="card-footer text-start">
           <div className="top-items row">
             <ul className="navbar-nav col-9 d-flex flex-row">
               <li>
@@ -45,6 +45,21 @@ function Timeline() {
               <a href="/" className="nav-link">
                 Copy Link
               </a>
+            </div>
+          </div>
+          <div className="like-count m-0">
+            <p>2 likes</p>
+          </div>
+          <div className="caption">
+            <p>
+              <a href="/">user.handle</a> Better to sink in the pee than to pee
+              in the sink
+            </p>
+          </div>
+          <div className="comment-box">
+            <div className="view-comment-menu">View All Comments</div>
+            <div className="comments">
+              <div className="comment">user.handle Cool pic sis</div>
             </div>
           </div>
         </div>
