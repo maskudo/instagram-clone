@@ -1,15 +1,6 @@
 import Header from "../components/Header";
 import Avatar from "../components/common/Avatar";
 import Photo from "../assets/img/monke.jpg";
-// let styleObject = {
-//   backgroundImage: `url('${Photo}')`,
-//   backgroundRepeat: "no-repeat",
-//   backgroundSize: "contain",
-//   backgroundPosition: "center",
-//   backgroundColor: "black",
-//   height: "20%",
-//   width: "20%",
-// };
 
 function Profile() {
   return (
@@ -32,9 +23,24 @@ function Profile() {
             </div>
           </div>
         </div>
-        {/* <div className="my-4 px-4 pic-container row row-cols-sm-3 row-cols-1 g-2 g-lg-4 w-100">
-          <div className="col-12" style={styleObject}></div>
-        </div> */}
+        <div className="m-4 pic-container row row-cols-sm-3 row-cols-1 g-2 g-lg-4">
+          {/* <div className="col-12" style={styleObject}></div> */}
+          <div className="col align-items-center ">
+            <img src={Photo} alt="monke" className="img-fluid" />
+          </div>
+          <div className="col align-items-center ">
+            <img src={Photo} alt="monke" className="img-fluid" />
+          </div>
+          <div className="col align-items-center ">
+            <img src={Photo} alt="monke" className="img-fluid" />
+          </div>
+          <div className="col align-items-center ">
+            <img src={Photo} alt="monke" className="img-fluid" />
+          </div>
+          <div className="col align-items-center ">
+            <img src={Photo} alt="monke" className="img-fluid" />
+          </div>
+        </div>
       </div>
     </>
   );
