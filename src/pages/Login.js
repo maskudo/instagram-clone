@@ -1,35 +1,34 @@
 import { useState } from "react";
-import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
 import { auth, db } from "../firebase";
-import { setDoc, doc, getDoc } from "firebase/firestore";
+import {
+  setDoc,
+  doc,
+  getDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
 
 function Login() {
   const [username, setUsername] = useState("");
-  const [isEmailError, setIsEmailError] = useState(false);
+  const [isEmailTaken, setisEmailTaken] = useState(false);
   const [isUsernameTaken, setIsUsernameTaken] = useState(false);
-  const googleLogin = () => {
+  const [isNoAccountExists, setIsNoAccountExists] = useState(false);
+
+  const googleLogin = async () => {
     const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
-        // The signed-in user info.
-        const user = result.user;
-        return user;
-        // if created=lastsignedin init user to database  and set context
-        // else  get user data ffrom database
-      })
-      .catch((error) => {
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        // ...
-      });
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+
+    const colRef = collection(db, "users");
+    const q = query(colRef, where("uid", "==", `${user.uid}`));
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) {
+      setIsNoAccountExists(true);
+      signOut(auth);
+    }
   };
   const signUp = async (e) => {
     e.preventDefault();
@@ -42,12 +41,13 @@ function Login() {
     }
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
-    const credential = GoogleAuthProvider.credentialFromResult(result);
-    const token = credential.accessToken;
     const user = result.user;
 
-    if (!(user.metadata.createdAt === user.metadata.lastLoginAt)) {
-      setIsEmailError(true);
+    const colRef = collection(db, "users");
+    const q = query(colRef, where("email", "==", user.email));
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      setisEmailTaken(true);
       return;
     }
     setDoc(docRef, {
@@ -58,7 +58,6 @@ function Login() {
       posts: [],
     });
   };
-
   return (
     <div className="login">
       <button className="btn btn-primary" onClick={googleLogin}>
@@ -76,7 +75,8 @@ function Login() {
           onChange={(e) => {
             setUsername(e.target.value);
             setIsUsernameTaken(false);
-            setIsEmailError(false);
+            setisEmailTaken(false);
+            setIsNoAccountExists(false);
           }}
         />
         <input
@@ -84,9 +84,12 @@ function Login() {
           type="submit"
           value={"Sign Up with Google"}
         />
-        <p className="text-danger">{isEmailError && "Email already taken"}</p>
+        <p className="text-danger">{isEmailTaken && "Email already taken"}</p>
         <p className="text-danger">
           {isUsernameTaken && "Username already taken"}
+        </p>
+        <p className="text-danger">
+          {isNoAccountExists && "account not registered"}
         </p>
       </form>
     </div>
