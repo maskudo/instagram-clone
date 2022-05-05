@@ -1,19 +1,23 @@
 import Header from "../components/Header";
 import Avatar from "../components/common/Avatar";
 import Photo from "../assets/img/monke.jpg";
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
 
 function Profile() {
+  const { user } = useContext(UserContext);
+
   return (
     <>
       <Header />
       <div className="main-content border border-4">
         <div className="overview row m-4 ">
           <div className="col-4">
-            <Avatar size={5} photo={Photo} />
+            <Avatar size={5} photo={user.photo} />
           </div>
           <div className="col-8 row">
             <div className="d-flex align-items-center">
-              <h3 className=" pe-4">user.handle</h3>
+              <h3 className=" pe-4">{user.username}</h3>
               <h5 className="">Edit Profile</h5>
             </div>
             <div className="user-stats d-flex ">

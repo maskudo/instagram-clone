@@ -1,15 +1,17 @@
 import Photo from "../assets/img/monke.jpg";
 import Avatar from "./common/Avatar";
-
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
 function Timeline() {
+  const { user } = useContext(UserContext);
   return (
     <div className="col-8">
       <div className="card my-4">
         <div className="card-header d-flex align-items-center">
-          <Avatar photo={Photo} size={2.5} />
+          <Avatar photo={user.photo} size={2.5} />
           <div className="mx-4">
             <a href="/" className="nav-link">
-              user.handle
+              {user.username}
             </a>
           </div>
         </div>
@@ -46,8 +48,8 @@ function Timeline() {
           </div>
           <div className="caption">
             <p>
-              <a href="/">user.handle</a> Better to sink in the pee than to pee
-              in the sink
+              <a href="/">{user.username}</a> Better to sink in the pee than to
+              pee in the sink
             </p>
           </div>
           <div className="comment-box">
