@@ -16,7 +16,7 @@ const updateUserPosts = async (username, post) => {
 function Sidebar() {
   const { user } = useContext(UserContext);
   const [postCaption, setPostCaption] = useState();
-  const [progress, setProgress] = useState(0);
+  const [progress, setProgress] = useState("");
 
   const handleChange = (e) => {
     if (e.target.files[0].size > 1024 * 1024 * 2) {
@@ -25,6 +25,7 @@ function Sidebar() {
     } else {
       console.log(e.target.files[0]);
     }
+    setProgress("");
   };
   const OnSubmit = (e) => {
     e.preventDefault();
@@ -44,6 +45,7 @@ function Sidebar() {
         setProgress(error.message);
       },
       () => {
+        document.getElementById("post-form").reset();
         // Handle successful uploads on complete
         // For instance, get the download URL: https://firebasestorage.googleapis.com/...
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
@@ -89,10 +91,11 @@ function Sidebar() {
               ></button>
             </div>
             <div class="modal-body">
-              <form onSubmit={OnSubmit}>
+              <form id="post-form" onSubmit={OnSubmit}>
                 <input
                   name="picture"
                   type="file"
+                  required
                   className="form-control form-control-sm"
                   placeholder="Picture"
                   id="picture"
@@ -101,6 +104,7 @@ function Sidebar() {
                 />
                 <input
                   type="text"
+                  name="caption"
                   className="form-control"
                   placeholder="Enter Caption"
                   id="caption"
