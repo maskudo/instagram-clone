@@ -58,6 +58,7 @@ function Sidebar() {
             comments: [],
             likes: [],
             username: user.username,
+            userAvatar: user.photo,
           };
           addDoc(collection(db, "posts"), post).then((postRef) => {
             const userRef = doc(db, "users", user.username);
