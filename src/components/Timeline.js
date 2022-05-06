@@ -1,4 +1,3 @@
-import Photo from "../assets/img/monke.jpg";
 import Avatar from "./common/Avatar";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../context/UserContext";
