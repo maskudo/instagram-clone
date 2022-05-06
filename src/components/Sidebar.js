@@ -83,6 +83,9 @@ function Sidebar() {
   };
   return (
     <div className="col-4">
+      <div>
+        <h3>{user.username}</h3>
+      </div>
       <button
         type="button"
         class="btn btn-primary"
