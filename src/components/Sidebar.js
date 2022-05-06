@@ -1,17 +1,20 @@
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import {
+  updateDoc,
+  arrayUnion,
+  doc,
+  Timestamp,
+  addDoc,
+  collection,
+} from "firebase/firestore";
 import { useContext, useState } from "react";
-import { updateDoc, arrayUnion, doc, Timestamp } from "firebase/firestore";
 import { UserContext } from "../context/UserContext";
 import { db, storage } from "../firebase";
-
-const updateUserPosts = async (username, post) => {
-  const userRef = doc(db, "users", username);
-
-  // Atomically add a new region to the "regions" array field.
-  await updateDoc(userRef, {
-    posts: arrayUnion(post),
-  });
-};
 
 function Sidebar() {
   const { user } = useContext(UserContext);
@@ -19,14 +22,14 @@ function Sidebar() {
   const [progress, setProgress] = useState("");
 
   const handleChange = (e) => {
-    if (e.target.files[0].size > 1024 * 1024 * 2) {
-      alert("File size should be smaller than 2 MB");
+    if (e.target.files[0].size > 1024 * 1024) {
+      alert("File size should be smaller than 1 MB");
       e.target.value = "";
     } else {
-      console.log(e.target.files[0]);
     }
     setProgress("");
   };
+
   const OnSubmit = (e) => {
     e.preventDefault();
     const file = e.target[0].files[0];
@@ -46,15 +49,33 @@ function Sidebar() {
       },
       () => {
         document.getElementById("post-form").reset();
-        // Handle successful uploads on complete
-        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+        //upload picture to storage and get url
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           const post = {
             image: downloadURL,
             caption: postCaption,
             uploadTime: Timestamp.now(),
+            comments: [],
+            likes: [],
+            username: user.username,
           };
-          updateUserPosts(user.username, post);
+          addDoc(collection(db, "posts"), post).then((postRef) => {
+            const userRef = doc(db, "users", user.username);
+            updateDoc(userRef, {
+              posts: arrayUnion(postRef.id),
+            }).catch((error) => {
+              deleteObject(postRef)
+                .then(() => {
+                  // File deleted successfully
+                  console.log("file deleted successfully");
+                })
+                .catch((error) => {
+                  // Uh-oh, an error occurred!
+                  console.log("error during file deletion");
+                  setProgress("error lol");
+                });
+            });
+          });
         });
       }
     );
