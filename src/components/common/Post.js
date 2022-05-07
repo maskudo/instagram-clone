@@ -106,6 +106,8 @@ function Post({ post }) {
             <input
               name="comment"
               required
+              minLength={0}
+              maxLength={200}
               onChange={(e) => {
                 setCommentText(e.target.value);
               }}
