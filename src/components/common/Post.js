@@ -2,12 +2,34 @@ import { db } from "../../firebase";
 import { useState, useContext } from "react";
 import { UserContext } from "../../context/UserContext";
 import Avatar from "./Avatar";
-import { arrayUnion, doc, Timestamp, updateDoc } from "firebase/firestore";
+import {
+  arrayRemove,
+  arrayUnion,
+  doc,
+  Timestamp,
+  updateDoc,
+} from "firebase/firestore";
 
 function Post({ post }) {
+  const { user } = useContext(UserContext);
   const [uPost, setUPost] = useState(post);
   const [commentText, setCommentText] = useState("");
-  const { user } = useContext(UserContext);
+  const [liked, setLiked] = useState(post.likes.includes(user.username));
+
+  const likePost = (e) => {
+    const likeStatus = !liked;
+    setLiked(likeStatus);
+    const postRef = doc(db, "posts", post.id);
+    if (likeStatus) {
+      updateDoc(postRef, {
+        likes: arrayUnion(user.username),
+      });
+    } else {
+      updateDoc(postRef, {
+        likes: arrayRemove(user.username),
+      });
+    }
+  };
   const submitComment = (e) => {
     e.preventDefault();
     const comment = {
@@ -16,7 +38,6 @@ function Post({ post }) {
       createdAt: Timestamp.now(),
     };
     const postRef = doc(db, "posts", post.id);
-    console.log("here lol");
     updateDoc(postRef, {
       comments: arrayUnion(comment),
     })
@@ -49,9 +70,9 @@ function Post({ post }) {
         <div className="top-items row">
           <ul className="navbar-nav col-9 d-flex flex-row p-2">
             <li>
-              <a href="/" className="nav-link pe-2">
-                Like
-              </a>
+              <buttton onClick={likePost} className="btn btn-primary pe-2">
+                Like{liked && "d"}
+              </buttton>
             </li>
             <li>
               <a href="/" className="nav-link pe-2">
