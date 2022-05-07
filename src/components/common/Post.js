@@ -1,11 +1,12 @@
 import { db } from "../../firebase";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { UserContext } from "../../context/UserContext";
 import Avatar from "./Avatar";
 import {
   arrayRemove,
   arrayUnion,
   doc,
+  onSnapshot,
   Timestamp,
   updateDoc,
 } from "firebase/firestore";
@@ -14,7 +15,7 @@ function Post({ post }) {
   const { user } = useContext(UserContext);
   const [uPost, setUPost] = useState(post);
   const [commentText, setCommentText] = useState("");
-  const [liked, setLiked] = useState(post.likes.includes(user.username));
+  const [liked, setLiked] = useState();
 
   const likePost = (e) => {
     const likeStatus = !liked;
@@ -40,19 +41,22 @@ function Post({ post }) {
     const postRef = doc(db, "posts", post.id);
     updateDoc(postRef, {
       comments: arrayUnion(comment),
-    })
-      .then(() => {
-        post.comments.push(comment);
-        setUPost(post);
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
-
+    });
     const form = document.getElementById(`f-${uPost.id}`);
     form.reset();
     setCommentText("");
   };
+  useEffect(() => {
+    const unsub = onSnapshot(doc(db, "posts", post.id), (doc) => {
+      setUPost({ ...doc.data(), id: doc.id });
+    });
+    return () => {
+      unsub();
+    };
+  }, [post.id]);
+  useEffect(() => {
+    setLiked(post.likes.includes(user.username));
+  }, [user, post.likes]);
   return (
     <div className="card my-4">
       <div className="card-header d-flex align-items-center">
@@ -92,7 +96,10 @@ function Post({ post }) {
           </div>
         </div>
         <div className="like-count m-0">
-          <p>2 likes</p>
+          <p>
+            {(uPost.likes.length && uPost.likes.length + " likes") ||
+              (!uPost.likes.length && "Be the first one to like!")}
+          </p>
         </div>
         <div className="caption">
           <p>
