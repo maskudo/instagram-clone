@@ -1,3 +1,4 @@
+import { useParams } from "react-router-dom";
 import Header from "../components/Header";
 import Avatar from "../components/common/Avatar";
 import Photo from "../assets/img/monke.jpg";
@@ -6,7 +7,7 @@ import { UserContext } from "../context/UserContext";
 
 function Profile() {
   const { user } = useContext(UserContext);
-
+  const { username } = useParams();
   return (
     <>
       <Header />

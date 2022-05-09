@@ -1,4 +1,8 @@
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
+
 function Header() {
+  const { user } = useContext(UserContext);
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -30,7 +34,7 @@ function Header() {
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="profile">
+                <a className="nav-link" href={`/${user.username}`}>
                   Profile
                 </a>
               </li>
