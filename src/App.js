@@ -24,7 +24,7 @@ function App() {
       getData();
     });
     return unSubAuth();
-  }, []);
+  }, [setUser]);
   return (
     <BrowserRouter>
       <div className="App">
