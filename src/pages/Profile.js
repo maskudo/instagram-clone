@@ -1,24 +1,45 @@
 import { useParams } from "react-router-dom";
 import Header from "../components/Header";
 import Avatar from "../components/common/Avatar";
-import Photo from "../assets/img/monke.jpg";
 import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../context/UserContext";
 import { db } from "../firebase";
-import { doc, getDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
 
 const getUserData = async (username) => {
   console.log("data ol");
   const userRef = doc(db, "users", username);
   const docSnap = await getDoc(userRef);
   if (docSnap.exists()) {
-    console.log("Document data:", docSnap.data());
     return { ...docSnap.data(), username: username };
   } else {
     // doc.data() will be undefined in this case
     console.log("No such document!");
     return 0;
   }
+};
+const fetchPosts = async (username) => {
+  const postsRef = collection(db, "posts");
+  const q = query(
+    postsRef,
+    where("username", "==", username),
+    orderBy("uploadTime", "desc")
+  );
+  const querySnapshot = await getDocs(q);
+  let posts = [];
+  querySnapshot.forEach((doc) => {
+    const post = { ...doc.data(), id: doc.id };
+    posts.push(post);
+  });
+  return posts;
 };
 
 function Profile() {
@@ -27,6 +48,7 @@ function Profile() {
   const [isLoggedUser, setIsLoggedUser] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState("");
+  const [posts, setPosts] = useState([]);
   useEffect(() => {
     if (user.username !== username) {
       setIsLoggedUser(false);
@@ -37,6 +59,9 @@ function Profile() {
     } else {
       setUserData(user);
     }
+    fetchPosts(username).then((result) => {
+      setPosts(result);
+    });
   }, [user, user.username, username]);
   return (
     <>
@@ -78,24 +103,17 @@ function Profile() {
             </div>
             <div className="m-4 pic-container row row-cols-sm-3 row-cols-1 g-2 g-lg-4">
               {/* <div className="col-12" style={styleObject}></div> */}
-              <div className="col align-items-center ">
-                <img src={Photo} alt="monke" className="img-fluid" />
-              </div>
-              <div className="col align-items-center ">
-                <img src={Photo} alt="monke" className="img-fluid" />
-              </div>
-              {"posts" in userData &&
-                userData.posts.length &&
-                userData.posts.map((post) => {
-                  //fetch posts first lol
+              {!!posts.length ? (
+                posts.map((post) => {
                   return (
-                    <>
-                      <div className="col align-items-center ">
-                        <img src={Photo} alt="monke" className="img-fluid" />
-                      </div>
-                    </>
+                    <div className="col align-items-center" id={post.id}>
+                      <img src={post.image} alt="" className="img-fluid" />
+                    </div>
                   );
-                })}
+                })
+              ) : (
+                <h1>No Posts found</h1>
+              )}
             </div>
           </>
         )}
