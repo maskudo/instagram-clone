@@ -14,13 +14,13 @@ import {
 } from "firebase/firestore";
 import { useContext, useState } from "react";
 import { UserContext } from "../context/UserContext";
-import { db, storage } from "../firebase";
+import { db, storage, auth } from "../firebase";
+import { signOut } from "firebase/auth";
 
 function Sidebar() {
   const { user } = useContext(UserContext);
   const [postCaption, setPostCaption] = useState();
   const [progress, setProgress] = useState("");
-
   const handleChange = (e) => {
     if (e.target.files[0].size > 1024 * 1024) {
       alert("File size should be smaller than 1 MB");
@@ -81,6 +81,9 @@ function Sidebar() {
       }
     );
   };
+  const SignOut = () => {
+    signOut(auth);
+  };
   return (
     <div className="col-4">
       <div>
@@ -88,11 +91,14 @@ function Sidebar() {
       </div>
       <button
         type="button"
-        class="btn btn-primary"
+        className="btn btn-primary"
         data-bs-toggle="modal"
         data-bs-target="#exampleModal"
       >
         Create Post
+      </button>
+      <button className="btn btn-danger" onClick={SignOut}>
+        Log Out
       </button>
 
       <div
@@ -152,9 +158,6 @@ function Sidebar() {
                 data-bs-dismiss="modal"
               >
                 Close
-              </button>
-              <button type="button" class="btn btn-primary">
-                Create
               </button>
             </div>
           </div>
