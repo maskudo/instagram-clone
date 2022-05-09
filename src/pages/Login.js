@@ -10,12 +10,14 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [isEmailTaken, setisEmailTaken] = useState(false);
   const [isUsernameTaken, setIsUsernameTaken] = useState(false);
   const [isNoAccountExists, setIsNoAccountExists] = useState(false);
+  let navigate = useNavigate();
 
   const googleLogin = async () => {
     const provider = new GoogleAuthProvider();
@@ -28,6 +30,8 @@ function Login() {
     if (querySnapshot.empty) {
       setIsNoAccountExists(true);
       signOut(auth);
+    } else {
+      navigate("/");
     }
   };
   const signUp = async (e) => {
@@ -50,13 +54,14 @@ function Login() {
       setisEmailTaken(true);
       return;
     }
-    setDoc(docRef, {
+    await setDoc(docRef, {
       displayName: user.displayName,
       photo: user.photoURL,
       uid: user.uid,
       email: user.email,
       posts: [],
     });
+    navigate("/");
   };
   return (
     <div className="login">
