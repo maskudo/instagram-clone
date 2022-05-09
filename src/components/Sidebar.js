@@ -12,6 +12,7 @@ import {
   addDoc,
   collection,
 } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { UserContext } from "../context/UserContext";
 import { db, storage, auth } from "../firebase";
@@ -21,6 +22,7 @@ function Sidebar() {
   const { user } = useContext(UserContext);
   const [postCaption, setPostCaption] = useState();
   const [progress, setProgress] = useState("");
+  let navigate = useNavigate();
   const handleChange = (e) => {
     if (e.target.files[0].size > 1024 * 1024) {
       alert("File size should be smaller than 1 MB");
@@ -83,6 +85,7 @@ function Sidebar() {
   };
   const SignOut = () => {
     signOut(auth);
+    navigate("/login");
   };
   return (
     <div className="col-4">
