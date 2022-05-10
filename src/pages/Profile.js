@@ -5,27 +5,18 @@ import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../context/UserContext";
 import { db } from "../firebase";
 import {
+  arrayRemove,
+  arrayUnion,
   collection,
   doc,
-  getDoc,
   getDocs,
+  onSnapshot,
   orderBy,
   query,
+  updateDoc,
   where,
 } from "firebase/firestore";
 
-const getUserData = async (username) => {
-  console.log("data ol");
-  const userRef = doc(db, "users", username);
-  const docSnap = await getDoc(userRef);
-  if (docSnap.exists()) {
-    return { ...docSnap.data(), username: username };
-  } else {
-    // doc.data() will be undefined in this case
-    console.log("No such document!");
-    return 0;
-  }
-};
 const fetchPosts = async (username) => {
   const postsRef = collection(db, "posts");
   const q = query(
@@ -50,20 +41,44 @@ function Profile() {
   const [userData, setUserData] = useState("");
   const [posts, setPosts] = useState([]);
   useEffect(() => {
-    if (user.username !== username) {
-      setIsLoggedUser(false);
-      getUserData(username).then((result) => {
-        setUserData(result);
-        setIsLoading(false);
-      });
-    } else {
-      setIsLoggedUser(true);
-      setUserData(user);
-    }
+    setIsLoggedUser(user.username === username);
+    const unsub = onSnapshot(doc(db, "users", username), (doc) => {
+      if (doc.exists()) {
+        setUserData({ ...doc.data(), username: username });
+      } else {
+        // doc.data() will be undefined in this case
+        setUserData(false);
+      }
+      setIsLoading(false);
+    });
     fetchPosts(username).then((result) => {
       setPosts(result);
     });
+    return () => {
+      unsub();
+    };
   }, [user, user.username, username]);
+  const FollowUser = (e) => {
+    const status = e.target.innerText.toLowerCase();
+    //update user.username's following list
+    const followingRef = doc(db, "users", user.username);
+    updateDoc(followingRef, {
+      following:
+        status === "follow" ? arrayUnion(username) : arrayRemove(username),
+    }).catch((error) => {
+      console.log(error.message);
+    });
+    //update username's followers list
+    const followersRef = doc(db, "users", username);
+    updateDoc(followersRef, {
+      followers:
+        status === "follow"
+          ? arrayUnion(user.username)
+          : arrayRemove(user.username),
+    }).catch((error) => {
+      console.log(error.message);
+    });
+  };
   return (
     <>
       <Header />
@@ -81,7 +96,12 @@ function Profile() {
                   {isLoggedUser ? (
                     <h5 className="">Edit Profile</h5>
                   ) : (
-                    <button className="btn btn-primary">Follow</button>
+                    <button className="btn btn-primary" onClick={FollowUser}>
+                      Follow
+                      {Object.keys(userData).includes("followers") &&
+                        userData.followers.includes(user.username) &&
+                        "ing"}
+                    </button>
                   )}
                 </div>
                 <div className="user-stats d-flex ">
