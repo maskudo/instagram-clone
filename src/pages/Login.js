@@ -60,6 +60,8 @@ function Login() {
       uid: user.uid,
       email: user.email,
       posts: [],
+      followers: [],
+      following: [],
     });
     navigate("/");
   };
