@@ -19,7 +19,7 @@ import { db, storage, auth } from "../firebase";
 import { signOut } from "firebase/auth";
 
 function Sidebar() {
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const [postCaption, setPostCaption] = useState();
   const [progress, setProgress] = useState("");
   let navigate = useNavigate();
@@ -85,6 +85,7 @@ function Sidebar() {
   };
   const SignOut = () => {
     signOut(auth);
+    setUser({});
     navigate("/login");
   };
   return (
