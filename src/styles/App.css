@@ -42,4 +42,9 @@
 }
 .main-content{
   margin: 0% 15%;
+  min-height: 40%;
+}
+.profile-post{
+  object-fit: cover;
+  height: 33vh;
 }

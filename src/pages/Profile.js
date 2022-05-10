@@ -87,10 +87,10 @@ function Profile() {
         {!!userData && (
           <>
             <div className="overview row m-4 ">
-              <div className="col-4">
-                <Avatar size={5} photo={userData.photo} />
+              <div className="col-sm-4 col-12">
+                <Avatar size={9} photo={userData.photo} />
               </div>
-              <div className="col-8 row">
+              <div className="col-sm-8 col-12 row">
                 <div className="d-flex align-items-center">
                   <h3 className=" pe-4">{userData.username}</h3>
                   {isLoggedUser ? (
@@ -106,29 +106,33 @@ function Profile() {
                 </div>
                 <div className="user-stats d-flex ">
                   <h6 className="pe-4">
-                    Posts:{" "}
-                    {("posts" in userData && userData.posts.length) || "0"}
+                    {("posts" in userData && userData.posts.length) || "0"}{" "}
+                    Posts
                   </h6>
                   <h6 className="pe-4">
-                    Followers:{" "}
                     {("followers" in userData && userData.followers.length) ||
-                      "0"}
+                      "0"}{" "}
+                    Followers
                   </h6>
                   <h6 className="pe-4">
-                    Following:{" "}
                     {("following" in userData && userData.following.length) ||
-                      "0"}
+                      "0"}{" "}
+                    Following
                   </h6>
                 </div>
               </div>
             </div>
-            <div className="m-4 pic-container row row-cols-sm-3 row-cols-1 g-2 g-lg-4">
-              {/* <div className="col-12" style={styleObject}></div> */}
+            <div className="m-4 pic-container row row-cols-md-3 row-cols-1 g-2 g-lg-4">
               {!!posts.length ? (
                 posts.map((post) => {
                   return (
-                    <div className="col align-items-center" id={post.id}>
-                      <img src={post.image} alt="" className="img-fluid" />
+                    <div className="col  align-items-center">
+                      <img
+                        src={post.image}
+                        alt=""
+                        className="profile-post img-fluid w-100"
+                        id={post.id}
+                      />
                     </div>
                   );
                 })
