@@ -57,6 +57,7 @@ function Profile() {
         setIsLoading(false);
       });
     } else {
+      setIsLoggedUser(true);
       setUserData(user);
     }
     fetchPosts(username).then((result) => {
