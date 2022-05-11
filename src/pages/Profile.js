@@ -32,6 +32,21 @@ const fetchPosts = async (username) => {
   });
   return posts;
 };
+const fetchFollows = async (followsList) => {
+  if (!followsList.length) {
+    console.log("no followers lol");
+    return [];
+  }
+  const usersRef = collection(db, "users");
+  const q = query(usersRef, where("username", "in", followsList));
+  const querySnapshot = await getDocs(q);
+  const users = [];
+  querySnapshot.forEach((doc) => {
+    const user = { ...doc.data(), id: doc.id };
+    users.push(user);
+  });
+  return users;
+};
 
 function Profile() {
   const { user } = useContext(UserContext);
@@ -40,6 +55,8 @@ function Profile() {
   const [isLoading, setIsLoading] = useState(true);
   const [userData, setUserData] = useState("");
   const [posts, setPosts] = useState([]);
+  const [followers, setFollowers] = useState([]);
+  const [following, setFollowing] = useState([]);
   useEffect(() => {
     setIsLoggedUser(user.username === username);
     const unsub = onSnapshot(doc(db, "users", username), (doc) => {
@@ -90,6 +107,7 @@ function Profile() {
               <div className="col-sm-4 col-12">
                 <Avatar size={9} photo={userData.photo} />
               </div>
+
               <div className="col-sm-8 col-12 row">
                 <div className="d-flex align-items-center">
                   <h3 className=" pe-4">{userData.username}</h3>
@@ -104,24 +122,138 @@ function Profile() {
                     </button>
                   )}
                 </div>
+
                 <div className="user-stats d-flex ">
-                  <h6 className="pe-4">
+                  <h6 className="pe-4 ">
                     {("posts" in userData && userData.posts.length) || "0"}{" "}
                     Posts
                   </h6>
-                  <h6 className="pe-4">
+
+                  <button
+                    className="pe-4 btn btn-outline-primary"
+                    type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#followersModal"
+                    onClick={async () => {
+                      const followersList = await fetchFollows(
+                        userData.followers
+                      );
+                      setFollowers(followersList);
+                    }}
+                  >
                     {("followers" in userData && userData.followers.length) ||
                       "0"}{" "}
                     Followers
-                  </h6>
-                  <h6 className="pe-4">
+                  </button>
+
+                  <div
+                    className="modal fade"
+                    id="followersModal"
+                    tabIndex="-1"
+                    aria-labelledby="followersModalLabel"
+                    aria-hidden="true"
+                  >
+                    <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                      <div className="modal-content">
+                        <div className="modal-header">
+                          <h5 className="modal-title" id="exampleModalLabel">
+                            Followers
+                          </h5>
+                          <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                          ></button>
+                        </div>
+                        <div className="modal-body">
+                          {followers.map((follower) => {
+                            return (
+                              <div
+                                id={`p-${follower.username}`}
+                                className="row"
+                              >
+                                <div className="col-8 align-items-center pl-4 d-flex justify-content-start">
+                                  <Avatar photo={follower.photo} size={2} />
+                                  <h6 className="px-2">{follower.username}</h6>
+                                </div>
+                                <div className="col-4 ">
+                                  <button className="btn btn-primary">
+                                    Follow
+                                  </button>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    className="pe-4 btn btn-outline-primary"
+                    type="button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#followingModal"
+                    onClick={async () => {
+                      const followingList = await fetchFollows(
+                        userData.following
+                      );
+                      setFollowing(followingList);
+                    }}
+                  >
                     {("following" in userData && userData.following.length) ||
                       "0"}{" "}
                     Following
-                  </h6>
+                  </button>
+
+                  <div
+                    className="modal fade"
+                    id="followingModal"
+                    tabIndex="-1"
+                    aria-labelledby="followingModalLabel"
+                    aria-hidden="true"
+                  >
+                    <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                      <div className="modal-content">
+                        <div className="modal-header">
+                          <h5 className="modal-title" id="exampleModalLabel">
+                            Following
+                          </h5>
+                          <button
+                            type="button"
+                            className="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                          ></button>
+                        </div>
+                        <div className="modal-body">
+                          {following.map((following) => {
+                            return (
+                              <div
+                                id={`p-${following.username}`}
+                                className="row"
+                              >
+                                <div className="col-8 align-items-center pl-4 d-flex justify-content-start">
+                                  <Avatar photo={following.photo} size={2} />
+                                  <h6 className="px-2">{following.username}</h6>
+                                </div>
+                                <div className="col-4 ">
+                                  <button className="btn btn-primary">
+                                    Follow
+                                  </button>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+
             <div className="m-4 pic-container row row-cols-md-3 row-cols-1 g-2 g-lg-4">
               {!!posts.length ? (
                 posts.map((post) => {
