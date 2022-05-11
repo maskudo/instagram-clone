@@ -128,14 +128,14 @@ function Profile() {
                 </div>
 
                 <div className="user-stats d-flex ">
-                  <h6 className="pe-4 ">
+                  <h6 className="pe-4">
                     {("posts" in userData && userData.posts.length) || "0"}{" "}
                     Posts
                   </h6>
 
-                  <button
-                    className="pe-4 btn btn-outline-primary"
-                    type="button"
+                  <h6
+                    className="pe-4 "
+                    role={"button"}
                     data-bs-toggle="modal"
                     data-bs-target="#followersModal"
                     onClick={async () => {
@@ -148,7 +148,7 @@ function Profile() {
                     {("followers" in userData && userData.followers.length) ||
                       "0"}{" "}
                     Followers
-                  </button>
+                  </h6>
 
                   <div
                     className="modal fade"
@@ -211,9 +211,9 @@ function Profile() {
                     </div>
                   </div>
 
-                  <button
-                    className="pe-4 btn btn-outline-primary"
-                    type="button"
+                  <h6
+                    className="pe-4 "
+                    role={"button"}
                     data-bs-toggle="modal"
                     data-bs-target="#followingModal"
                     onClick={async () => {
@@ -226,7 +226,7 @@ function Profile() {
                     {("following" in userData && userData.following.length) ||
                       "0"}{" "}
                     Following
-                  </button>
+                  </h6>
 
                   <div
                     className="modal fade"
