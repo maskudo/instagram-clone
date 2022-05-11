@@ -62,6 +62,7 @@ function Login() {
       posts: [],
       followers: [],
       following: [],
+      username: username,
     });
     navigate("/");
   };
