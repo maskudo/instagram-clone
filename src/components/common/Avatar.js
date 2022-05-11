@@ -6,7 +6,9 @@ function Avatar(props) {
     height: `${props.size}rem`,
     width: `${props.size}rem`,
   };
-  return <div style={bgStylingObject} className=" rounded-circle"></div>;
+  return (
+    <div style={bgStylingObject} className=" rounded-circle shadow-sm"></div>
+  );
 }
 
 export default Avatar;
