@@ -56,7 +56,7 @@ function Profile() {
   const [userData, setUserData] = useState("");
   const [posts, setPosts] = useState([]);
   const [followers, setFollowers] = useState([]);
-  const [following, setFollowing] = useState([]);
+  const [followings, setFollowings] = useState([]);
   useEffect(() => {
     setIsLoggedUser(user.username === username);
     const unsub = onSnapshot(doc(db, "users", username), (doc) => {
@@ -75,8 +75,7 @@ function Profile() {
       unsub();
     };
   }, [user, user.username, username]);
-  const FollowUser = (e) => {
-    const status = e.target.innerText.toLowerCase();
+  const FollowUser = (status, username) => {
     //update user.username's following list
     const followingRef = doc(db, "users", user.username);
     updateDoc(followingRef, {
@@ -114,7 +113,13 @@ function Profile() {
                   {isLoggedUser ? (
                     <h5 className="">Edit Profile</h5>
                   ) : (
-                    <button className="btn btn-primary" onClick={FollowUser}>
+                    <button
+                      className="btn btn-primary"
+                      onClick={(e) => {
+                        const status = e.target.innerText.toLowerCase();
+                        FollowUser(status, username);
+                      }}
+                    >
                       Follow
                       {Object.keys(userData).includes("followers") &&
                         userData.followers.includes(user.username) &&
@@ -178,8 +183,25 @@ function Profile() {
                                   <h6 className="px-2">{follower.username}</h6>
                                 </div>
                                 <div className="col-4 ">
-                                  <button className="btn btn-primary">
+                                  <button
+                                    className="btn btn-primary"
+                                    onClick={(e) => {
+                                      const status =
+                                        e.target.innerText.toLowerCase();
+                                      FollowUser(status, follower.username);
+                                    }}
+                                    disabled={
+                                      follower.username === user.username
+                                    }
+                                  >
                                     Follow
+                                    {Object.keys(follower).includes(
+                                      "followers"
+                                    ) &&
+                                      follower.followers.includes(
+                                        user.username
+                                      ) &&
+                                      "ing"}
                                   </button>
                                 </div>
                               </div>
@@ -199,7 +221,7 @@ function Profile() {
                       const followingList = await fetchFollows(
                         userData.following
                       );
-                      setFollowing(followingList);
+                      setFollowings(followingList);
                     }}
                   >
                     {("following" in userData && userData.following.length) ||
@@ -228,7 +250,7 @@ function Profile() {
                           ></button>
                         </div>
                         <div className="modal-body">
-                          {following.map((following) => {
+                          {followings.map((following) => {
                             return (
                               <div
                                 id={`p-${following.username}`}
@@ -239,8 +261,21 @@ function Profile() {
                                   <h6 className="px-2">{following.username}</h6>
                                 </div>
                                 <div className="col-4 ">
-                                  <button className="btn btn-primary">
+                                  <button
+                                    className="btn btn-primary"
+                                    onClick={FollowUser}
+                                    disabled={
+                                      following.username === user.username
+                                    }
+                                  >
                                     Follow
+                                    {Object.keys(following).includes(
+                                      "followers"
+                                    ) &&
+                                      following.followers.includes(
+                                        user.username
+                                      ) &&
+                                      "ing"}
                                   </button>
                                 </div>
                               </div>
