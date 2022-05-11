@@ -120,10 +120,9 @@ function Profile() {
                         FollowUser(status, username);
                       }}
                     >
-                      Follow
-                      {Object.keys(userData).includes("followers") &&
-                        userData.followers.includes(user.username) &&
-                        "ing"}
+                      {userData.followers.includes(user.username)
+                        ? "Unfollow"
+                        : "Follow"}
                     </button>
                   )}
                 </div>
@@ -189,19 +188,19 @@ function Profile() {
                                       const status =
                                         e.target.innerText.toLowerCase();
                                       FollowUser(status, follower.username);
+                                      if (status === "follow") {
+                                        e.target.innerText = "Following";
+                                      } else {
+                                        e.target.innerText = "Follow";
+                                      }
                                     }}
                                     disabled={
                                       follower.username === user.username
                                     }
                                   >
-                                    Follow
-                                    {Object.keys(follower).includes(
-                                      "followers"
-                                    ) &&
-                                      follower.followers.includes(
-                                        user.username
-                                      ) &&
-                                      "ing"}
+                                    {follower.followers.includes(user.username)
+                                      ? "Unfollow"
+                                      : "Follow"}
                                   </button>
                                 </div>
                               </div>
@@ -263,19 +262,23 @@ function Profile() {
                                 <div className="col-4 ">
                                   <button
                                     className="btn btn-primary"
-                                    onClick={FollowUser}
+                                    onClick={(e) => {
+                                      const status =
+                                        e.target.innerText.toLowerCase();
+                                      FollowUser(status, following.username);
+                                      if (status === "follow") {
+                                        e.target.innerText = "Unfollow";
+                                      } else {
+                                        e.target.innerText = "Follow";
+                                      }
+                                    }}
                                     disabled={
                                       following.username === user.username
                                     }
                                   >
-                                    Follow
-                                    {Object.keys(following).includes(
-                                      "followers"
-                                    ) &&
-                                      following.followers.includes(
-                                        user.username
-                                      ) &&
-                                      "ing"}
+                                    {following.followers.includes(user.username)
+                                      ? "Unfollow"
+                                      : "Follow"}
                                   </button>
                                 </div>
                               </div>
