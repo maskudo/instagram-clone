@@ -98,11 +98,11 @@ function Profile() {
   return (
     <>
       <Header />
-      <div className="main-content border border-4">
+      <div className="main-content">
         {!userData && !isLoading && <h1>User {username} not found </h1>}
         {!!userData && (
           <>
-            <div className="overview row m-4 ">
+            <div className=" overview row ">
               <div className="col-sm-4 col-12">
                 <Avatar size={9} photo={userData.photo} />
               </div>
@@ -292,18 +292,28 @@ function Profile() {
               </div>
             </div>
 
-            <div className="m-4 pic-container row row-cols-md-3 row-cols-1 g-2 g-lg-4">
+            <div className="row row-cols-md-3 row-cols-1 border-top">
               {!!posts.length ? (
                 posts.map((post) => {
                   return (
-                    <div className="col  align-items-center">
-                      <img
-                        src={post.image}
-                        alt=""
-                        className="profile-post img-fluid w-100"
-                        id={post.id}
-                      />
-                    </div>
+                    <>
+                      <div className="col align-items-center pt-4 pb-0">
+                        <img
+                          src={post.image}
+                          alt=""
+                          className="profile-post img-fluid w-100"
+                          id={post.id}
+                        />
+                      </div>
+                      <div className="col align-items-center pt-4 pb-0 ">
+                        <img
+                          src={post.image}
+                          alt=""
+                          className="profile-post img-fluid w-100"
+                          id={post.id}
+                        />
+                      </div>
+                    </>
                   );
                 })
               ) : (

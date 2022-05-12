@@ -43,8 +43,12 @@
 .main-content{
   margin: 0% 15%;
   min-height: 40%;
+  overflow: hidden;
 }
 .profile-post{
   object-fit: cover;
-  height: 33vh;
+  height: 40vh;
+}
+.overview{
+  padding: 3% 7%;
 }

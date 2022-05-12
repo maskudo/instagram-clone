@@ -6,8 +6,8 @@ function Header() {
   return (
     <>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <div className="container-fluid row header-margin">
-          <a href="/" className="navbar-brand col-4">
+        <div className="container-fluid row header-margin text-start">
+          <a href="/" className="navbar-brand col-4 fs-2">
             Instagram
           </a>
           <div
@@ -22,15 +22,15 @@ function Header() {
                 aria-label="Search"
               />
             </form>
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0 d-flex justify-content-evenly col-6">
+            <ul className="navbar-nav me-auto mb-2 mb-lg-0 d-flex justify-content-between col-6">
               <li className="nav-item">
                 <a className="nav-link" href="/">
                   Home
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="noti">
-                  Post
+                <a className="nav-link" href="message">
+                  Message
                 </a>
               </li>
               <li className="nav-item">
