@@ -5,17 +5,15 @@ import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../context/UserContext";
 import { db } from "../firebase";
 import {
-  arrayRemove,
-  arrayUnion,
   collection,
   doc,
   getDocs,
   onSnapshot,
   orderBy,
   query,
-  updateDoc,
   where,
 } from "firebase/firestore";
+import { FollowUser } from "../Functions/followUser";
 
 const fetchPosts = async (username) => {
   const postsRef = collection(db, "posts");
@@ -75,26 +73,6 @@ function Profile() {
       unsub();
     };
   }, [user, user.username, username]);
-  const FollowUser = (status, username) => {
-    //update user.username's following list
-    const followingRef = doc(db, "users", user.username);
-    updateDoc(followingRef, {
-      following:
-        status === "follow" ? arrayUnion(username) : arrayRemove(username),
-    }).catch((error) => {
-      console.log(error.message);
-    });
-    //update username's followers list
-    const followersRef = doc(db, "users", username);
-    updateDoc(followersRef, {
-      followers:
-        status === "follow"
-          ? arrayUnion(user.username)
-          : arrayRemove(user.username),
-    }).catch((error) => {
-      console.log(error.message);
-    });
-  };
   return (
     <>
       <Header />
@@ -117,7 +95,7 @@ function Profile() {
                       className="btn btn-primary"
                       onClick={(e) => {
                         const status = e.target.innerText.toLowerCase();
-                        FollowUser(status, username);
+                        FollowUser(user, status, username);
                       }}
                     >
                       {userData.followers.includes(user.username)
@@ -187,7 +165,11 @@ function Profile() {
                                     onClick={(e) => {
                                       const status =
                                         e.target.innerText.toLowerCase();
-                                      FollowUser(status, follower.username);
+                                      FollowUser(
+                                        user,
+                                        status,
+                                        follower.username
+                                      );
                                       if (status === "follow") {
                                         e.target.innerText = "Following";
                                       } else {
@@ -265,7 +247,11 @@ function Profile() {
                                     onClick={(e) => {
                                       const status =
                                         e.target.innerText.toLowerCase();
-                                      FollowUser(status, following.username);
+                                      FollowUser(
+                                        user,
+                                        status,
+                                        following.username
+                                      );
                                       if (status === "follow") {
                                         e.target.innerText = "Unfollow";
                                       } else {
