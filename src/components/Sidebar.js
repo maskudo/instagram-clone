@@ -11,17 +11,24 @@ import {
   Timestamp,
   addDoc,
   collection,
+  query,
+  where,
+  getDocs,
+  limit,
 } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../context/UserContext";
 import { db, storage, auth } from "../firebase";
 import { signOut } from "firebase/auth";
+import { FollowUser } from "./../Functions/followUser";
+import Avatar from "./common/Avatar";
 
 function Sidebar() {
   const { user, setUser } = useContext(UserContext);
   const [postCaption, setPostCaption] = useState();
   const [progress, setProgress] = useState("");
+  const [suggestedUsers, setSuggestedUsers] = useState([]);
   let navigate = useNavigate();
   const handleChange = (e) => {
     if (e.target.files[0].size > 1024 * 1024) {
@@ -88,22 +95,78 @@ function Sidebar() {
     setUser({});
     navigate("/login");
   };
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+    const colRef = collection(db, "users");
+    let q;
+    if (!!user.following.length) {
+      q = query(colRef, where("username", "not-in", user.following), limit(5));
+    } else {
+      q = query(colRef, limit(5));
+    }
+    getDocs(q).then((querySnapshot) => {
+      let suggestions = [];
+      querySnapshot.forEach((doc) => {
+        if (doc.id !== user.username) {
+          suggestions.push({ ...doc.data(), id: doc.id });
+        }
+      });
+      console.log(user.username, suggestions);
+      setSuggestedUsers(suggestions);
+    });
+  }, [user, user.following]);
   return (
     <div className="col-4">
       <div>
-        <h3>{user.username}</h3>
+        <div>
+          <h3>{user.username}</h3>
+        </div>
+        <button
+          type="button"
+          className="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#exampleModal"
+        >
+          Create Post
+        </button>
+        <button className="btn btn-danger" onClick={SignOut}>
+          Log Out
+        </button>
       </div>
-      <button
-        type="button"
-        className="btn btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#exampleModal"
-      >
-        Create Post
-      </button>
-      <button className="btn btn-danger" onClick={SignOut}>
-        Log Out
-      </button>
+      <div className="suggestedUsers my-2">
+        {suggestedUsers &&
+          suggestedUsers.map((suggestedUser) => {
+            return (
+              <div id={`p-${suggestedUser.username}`} className="row">
+                <div className="col-8 align-items-center pl-4 d-flex justify-content-start">
+                  <Avatar photo={suggestedUser.photo} size={2} />
+                  <h6 className="px-2">{suggestedUser.username}</h6>
+                </div>
+                <div className="col-4 ">
+                  <button
+                    className="btn btn-primary"
+                    onClick={(e) => {
+                      const status = e.target.innerText.toLowerCase();
+                      FollowUser(user, status, suggestedUser.username);
+                      if (status === "follow") {
+                        e.target.innerText = "Following";
+                      } else {
+                        e.target.innerText = "Follow";
+                      }
+                    }}
+                    disabled={suggestedUser.username === user.username}
+                  >
+                    {suggestedUser.followers.includes(user.username)
+                      ? "Unfollow"
+                      : "Follow"}
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+      </div>
 
       <div
         class="modal fade"
