@@ -21,8 +21,7 @@ import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../context/UserContext";
 import { db, storage, auth } from "../firebase";
 import { signOut } from "firebase/auth";
-import { FollowUser } from "./../Functions/followUser";
-import Avatar from "./common/Avatar";
+import ProfileListItem from "./common/ProfileListItem";
 
 function Sidebar() {
   const { user, setUser } = useContext(UserContext);
@@ -135,37 +134,13 @@ function Sidebar() {
           Log Out
         </button>
       </div>
-      <div className="suggestedUsers my-2">
+      <div className="suggested-users profile-list my-2">
         <h6 className="text-start ps-1 py-2 text-muted">Suggestions for you</h6>
         {suggestedUsers &&
           suggestedUsers.map((suggestedUser) => {
             return (
               <>
-                <div id={`p-${suggestedUser.username}`} className="row pb-2">
-                  <div className="col-8 align-items-center d-flex justify-content-start">
-                    <Avatar photo={suggestedUser.photo} size={2} />
-                    <h6 className="px-2">{suggestedUser.username}</h6>
-                  </div>
-                  <div className="col-4 ">
-                    <button
-                      className="btn btn-primary"
-                      onClick={(e) => {
-                        const status = e.target.innerText.toLowerCase();
-                        FollowUser(user, status, suggestedUser.username);
-                        if (status === "follow") {
-                          e.target.innerText = "Following";
-                        } else {
-                          e.target.innerText = "Follow";
-                        }
-                      }}
-                      disabled={suggestedUser.username === user.username}
-                    >
-                      {suggestedUser.followers.includes(user.username)
-                        ? "Unfollow"
-                        : "Follow"}
-                    </button>
-                  </div>
-                </div>
+                <ProfileListItem user={user} profileListUser={suggestedUser} />
               </>
             );
           })}
