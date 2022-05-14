@@ -14,6 +14,7 @@ import {
   where,
 } from "firebase/firestore";
 import { FollowUser } from "../Functions/followUser";
+import ProfileListItem from "../components/common/ProfileListItem";
 
 const fetchPosts = async (username) => {
   const postsRef = collection(db, "posts");
@@ -151,41 +152,10 @@ function Profile() {
                         <div className="modal-body">
                           {followers.map((follower) => {
                             return (
-                              <div
-                                id={`p-${follower.username}`}
-                                className="row"
-                              >
-                                <div className="col-8 align-items-center pl-4 d-flex justify-content-start">
-                                  <Avatar photo={follower.photo} size={2} />
-                                  <h6 className="px-2">{follower.username}</h6>
-                                </div>
-                                <div className="col-4 ">
-                                  <button
-                                    className="btn btn-primary"
-                                    onClick={(e) => {
-                                      const status =
-                                        e.target.innerText.toLowerCase();
-                                      FollowUser(
-                                        user,
-                                        status,
-                                        follower.username
-                                      );
-                                      if (status === "follow") {
-                                        e.target.innerText = "Following";
-                                      } else {
-                                        e.target.innerText = "Follow";
-                                      }
-                                    }}
-                                    disabled={
-                                      follower.username === user.username
-                                    }
-                                  >
-                                    {follower.followers.includes(user.username)
-                                      ? "Unfollow"
-                                      : "Follow"}
-                                  </button>
-                                </div>
-                              </div>
+                              <ProfileListItem
+                                user={user}
+                                profileListUser={follower}
+                              />
                             );
                           })}
                         </div>
@@ -233,41 +203,10 @@ function Profile() {
                         <div className="modal-body">
                           {followings.map((following) => {
                             return (
-                              <div
-                                id={`p-${following.username}`}
-                                className="row"
-                              >
-                                <div className="col-8 align-items-center pl-4 d-flex justify-content-start">
-                                  <Avatar photo={following.photo} size={2} />
-                                  <h6 className="px-2">{following.username}</h6>
-                                </div>
-                                <div className="col-4 ">
-                                  <button
-                                    className="btn btn-primary"
-                                    onClick={(e) => {
-                                      const status =
-                                        e.target.innerText.toLowerCase();
-                                      FollowUser(
-                                        user,
-                                        status,
-                                        following.username
-                                      );
-                                      if (status === "follow") {
-                                        e.target.innerText = "Unfollow";
-                                      } else {
-                                        e.target.innerText = "Follow";
-                                      }
-                                    }}
-                                    disabled={
-                                      following.username === user.username
-                                    }
-                                  >
-                                    {following.followers.includes(user.username)
-                                      ? "Unfollow"
-                                      : "Follow"}
-                                  </button>
-                                </div>
-                              </div>
+                              <ProfileListItem
+                                user={user}
+                                profileListUser={following}
+                              />
                             );
                           })}
                         </div>
