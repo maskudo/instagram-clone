@@ -1,3 +1,8 @@
+# Build Steps
+1. Git clone <repo>
+2. Create .env folder and add firebase keys inside 
+3. npm start
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
