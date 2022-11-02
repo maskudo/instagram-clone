@@ -1,5 +1,6 @@
 import { db } from "../../firebase";
 import { useState, useContext, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { UserContext } from "../../context/UserContext";
 import Avatar from "./Avatar";
 import {
@@ -62,12 +63,12 @@ function Post({ post }) {
       <div className="card-header d-flex align-items-center">
         <Avatar photo={uPost.userAvatar} size={2.5} />
         <div className="mx-4">
-          <a
-            href={`/${uPost.username}`}
+          <Link
+            to={`/${uPost.username}`}
             className="fw-bold text-decoration-none text-reset"
           >
             {uPost.username}
-          </a>
+          </Link>
         </div>
       </div>
       <div class="card-body p-0">
@@ -85,20 +86,20 @@ function Post({ post }) {
               </buttton>
             </li>
             <li>
-              <a href="/" className="nav-link pe-2">
+              <Link to="/" className="nav-link pe-2">
                 Comment
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/" className="nav-link pe-2">
+              <Link to="/" className="nav-link pe-2">
                 Share
-              </a>
+              </Link>
             </li>
           </ul>
           <div className="col-3">
-            <a href="/" className="nav-link">
+            <Link to="/" className="nav-link">
               Copy Link
-            </a>
+            </Link>
           </div>
         </div>
         <div className="like-count m-0">
@@ -109,12 +110,12 @@ function Post({ post }) {
         </div>
         <div className="caption">
           <p className="my-0">
-            <a
-              href={`/${uPost.username}`}
+            <Link
+              to={`/${uPost.username}`}
               className="fw-bold text-decoration-none text-reset"
             >
               {uPost.username}
-            </a>{" "}
+            </Link>{" "}
             {uPost.caption}
           </p>
         </div>

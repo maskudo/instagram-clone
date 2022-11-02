@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
+import { Link } from "react-router-dom";
 
 function Header() {
   const { user } = useContext(UserContext);
@@ -7,9 +8,9 @@ function Header() {
     <>
       <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container-fluid row header-margin text-start">
-          <a href="/" className="navbar-brand col-4 fs-2">
+          <Link to="/" className="navbar-brand col-4 fs-2">
             Instagram
-          </a>
+          </Link>
           <div
             className="collapse navbar-collapse col-8 row"
             id="navbarSupportedContent"
@@ -24,19 +25,19 @@ function Header() {
             </form>
             <ul className="navbar-nav me-auto mb-2 mb-lg-0 d-flex justify-content-between col-6">
               <li className="nav-item">
-                <a className="nav-link" href="/">
+                <Link className="nav-link" to="/">
                   Home
-                </a>
+                </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="message">
+                <Link className="nav-link" to="message">
                   Message
-                </a>
+                </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href={`/${user.username}`}>
+                <Link className="nav-link" to={`/${user.username}`}>
                   Profile
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
