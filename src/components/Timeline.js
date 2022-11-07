@@ -1,36 +1,18 @@
 import { useEffect, useState } from "react";
-import { db } from "../firebase";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  limit,
-  orderBy,
-  query,
-  startAfter,
-} from "firebase/firestore";
 import Post from "./common/Post";
-const fetchPosts = async () => {
-  const postsRef = collection(db, "posts");
-  const q = query(postsRef, orderBy("uploadTime", "desc"), limit(3));
-  const querySnapshot = await getDocs(q);
-  let posts = [];
-  querySnapshot.forEach((doc) => {
-    const post = { ...doc.data(), id: doc.id };
-    posts.push(post);
-  });
-  return posts;
-};
+import {fetchPostsByCount, fetchPostsAfter} from "../Functions/fetchPostFunctions";
+
 function Timeline() {
   const [posts, setPosts] = useState([]);
+
   useEffect(() => {
     const getPosts = async () => {
-      const fetchedPosts = await fetchPosts();
+      const fetchedPosts = await fetchPostsByCount(3);
       setPosts(fetchedPosts);
     };
     getPosts();
   }, []);
+
   useEffect(() => {
     const handleScroll = async () => {
       const windowHeight =
@@ -50,21 +32,7 @@ function Timeline() {
       if (Math.ceil(windowBottom) >= docHeight - 1) {
         if (posts.length) {
           const lastPost = posts[posts.length - 1];
-          const docSnap = await getDoc(
-            doc(collection(db, "posts"), lastPost.id)
-          );
-          const nextDocsQuery = query(
-            collection(db, "posts"),
-            orderBy("uploadTime", "desc"),
-            limit(3),
-            startAfter(docSnap)
-          );
-          const querySnapshot = await getDocs(nextDocsQuery);
-          let nextPosts = [];
-          querySnapshot.forEach((doc) => {
-            const newPost = { ...doc.data(), id: doc.id };
-            nextPosts.push(newPost);
-          });
+          const nextPosts = await fetchPostsAfter(lastPost);
           setPosts([...posts, ...nextPosts]);
         }
       }
@@ -74,6 +42,7 @@ function Timeline() {
       window.removeEventListener("scroll", handleScroll);
     };
   });
+
   return (
     <div className="col-8">
       {!!posts.length &&

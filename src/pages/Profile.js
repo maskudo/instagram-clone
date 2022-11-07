@@ -5,47 +5,12 @@ import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../context/UserContext";
 import { db } from "../firebase";
 import {
-  collection,
   doc,
-  getDocs,
   onSnapshot,
-  orderBy,
-  query,
-  where,
 } from "firebase/firestore";
-import { FollowUser } from "../Functions/followUser";
+import { FollowUser , fetchFollows} from "../Functions/followFunctions.js";
 import ProfileListItem from "../components/common/ProfileListItem";
-
-const fetchPosts = async (username) => {
-  const postsRef = collection(db, "posts");
-  const q = query(
-    postsRef,
-    where("username", "==", username),
-    orderBy("uploadTime", "desc")
-  );
-  const querySnapshot = await getDocs(q);
-  let posts = [];
-  querySnapshot.forEach((doc) => {
-    const post = { ...doc.data(), id: doc.id };
-    posts.push(post);
-  });
-  return posts;
-};
-const fetchFollows = async (followsList) => {
-  if (!followsList.length) {
-    console.log("no followers lol");
-    return [];
-  }
-  const usersRef = collection(db, "users");
-  const q = query(usersRef, where("username", "in", followsList));
-  const querySnapshot = await getDocs(q);
-  const users = [];
-  querySnapshot.forEach((doc) => {
-    const user = { ...doc.data(), id: doc.id };
-    users.push(user);
-  });
-  return users;
-};
+import {fetchPostsByUsername} from "../Functions/fetchPostFunctions";
 
 function Profile() {
   const { user } = useContext(UserContext);
@@ -67,13 +32,14 @@ function Profile() {
       }
       setIsLoading(false);
     });
-    fetchPosts(username).then((result) => {
+    fetchPostsByUsername(username).then((result) => {
       setPosts(result);
     });
     return () => {
       unsub();
     };
   }, [user, user.username, username]);
+
   return (
     <>
       <Header />

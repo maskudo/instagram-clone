@@ -1,5 +1,6 @@
-import { FollowUser } from "../../Functions/followUser";
+import { FollowUser } from "../../Functions/followFunctions.js";
 import Avatar from "./Avatar";
+
 function ProfileListItem({ user, profileListUser }) {
   return (
     <div
