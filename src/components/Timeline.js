@@ -44,7 +44,7 @@ function Timeline() {
   });
 
   return (
-    <div className="col-8">
+    <div className="col-8 mt-4">
       {!!posts.length &&
         posts.map((post) => {
           return <Post post={post} />;

@@ -29,6 +29,7 @@ function Sidebar() {
   const [progress, setProgress] = useState("");
   const [suggestedUsers, setSuggestedUsers] = useState([]);
   let navigate = useNavigate();
+
   const handleChange = (e) => {
     if (e.target.files[0].size > 1024 * 1024) {
       alert("File size should be smaller than 1 MB");
@@ -76,12 +77,10 @@ function Sidebar() {
               deleteObject(postRef)
                 .then(() => {
                   // File deleted successfully
-                  console.log("file deleted successfully");
                 })
                 .catch((error) => {
                   // Uh-oh, an error occurred!
-                  console.log("error during file deletion");
-                  setProgress("error lol");
+                  setProgress("Error!");
                 });
             });
           });
@@ -89,11 +88,13 @@ function Sidebar() {
       }
     );
   };
+
   const SignOut = () => {
     signOut(auth);
     setUser({});
     navigate("/login");
   };
+
   useEffect(() => {
     if (!user) {
       return;
@@ -116,12 +117,10 @@ function Sidebar() {
       setSuggestedUsers(suggestions);
     });
   }, [user, user.following]);
+
   return (
-    <div className="col-4">
+    <div className="col-4 mt-4">
       <div>
-        <div>
-          <h3>{user.username}</h3>
-        </div>
         <button
           type="button"
           className="btn btn-primary"
